@@ -1,1 +1,1 @@
-zuerst auf app dann 3 punkte und dann Herunterladen
+zuerst auf app dann 3 punkte und dann Herunterladen dann öffne.
