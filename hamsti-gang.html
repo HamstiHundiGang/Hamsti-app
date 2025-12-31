@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsti Gang – Spiel</title>
+
+<style>
+body{margin:0;background:#111;color:white;font-family:Arial;text-align:center}
+h1{color:#ffcc00;margin-top:10px;}
+#game{width:320px;height:420px;background:#222;margin:10px auto;border-radius:15px;position:relative;overflow:hidden}
+#hamster{position:absolute;bottom:10px;left:140px;font-size:32px}
+.item{position:absolute;font-size:22px}
+#hud{display:flex;justify-content:space-around;margin:10px}
+button,select,input{padding:8px;border-radius:8px;border:none;margin:4px}
+button{background:#ffcc00;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<h1>🐹 Hamsti Gang</h1>
+
+<div id="hud">
+  <div>🪙 Coins: <span id="coins">0</span></div>
+  <div>⭐ Punkte: <span id="score">0</span></div>
+  <div>Level: <span id="level">1</span></div>
+</div>
+
+<p>
+Name: <input id="name" value="Raffi">
+Hut:
+<select id="hat">
+<option value="">Kein</option>
+<option value="🎩">🎩 Zylinder (5 Coins)</option>
+<option value="👑">👑 Krone (10 Coins)</option>
+<option value="🎓">🎓 Mütze (7 Coins)</option>
+<option value="🧢">🧢 Cap (7 Coins)</option>
+</select>
+</p>
+
+<button onclick="start()">Start Spiel</button>
+
+<div id="game">
+  <div id="hamster">🐹</div>
+</div>
+
+<audio id="coinSound">
+  <source src="https://www.soundjay.com/misc/sounds/coin-drop-1.mp3" type="audio/mpeg">
+</audio>
+<audio id="starSound">
+  <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let hamster=document.getElementById("hamster");
+let game=document.getElementById("game");
+let scoreEl=document.getElementById("score");
+let coinsEl=document.getElementById("coins");
+let levelEl=document.getElementById("level");
+let coinSound=document.getElementById("coinSound");
+let starSound=document.getElementById("starSound");
+
+let x=140,score=0,coins=0,running=false,level=1;
+let speed=600;
+
+document.addEventListener("keydown",e=>{
+ if(!running) return;
+ if(e.key==="ArrowLeft") x-=20;
+ if(e.key==="ArrowRight") x+=20;
+ x=Math.max(0,Math.min(280,x));
+ hamster.style.left=x+"px";
+});
+
+game.addEventListener("click",e=>{
+ x = e.offsetX < 160 ? x-30 : x+30;
+ x=Math.max(0,Math.min(280,x));
+ hamster.style.left=x+"px";
+});
+
+function spawn(){
+ if(!running) return;
+ let it=document.createElement("div");
+ it.className="item";
+ let isCoin=Math.random()>0.4;
+ it.textContent=isCoin?"🪙":"⭐";
+ it.style.left=Math.random()*280+"px";
+ game.appendChild(it);
+ let y=0;
+ let fall=setInterval(()=>{
+  if(!running){clearInterval(fall);return}
+  y+=5;
+  it.style.top=y+"px";
+  if(y>360){
+   if(Math.abs(it.offsetLeft-x)<30){
+    if(isCoin){coins++; coinsEl.textContent=coins; coinSound.play();}
+    else{score++; scoreEl.textContent=score; starSound.play();}
+   }
+   it.remove(); clearInterval(fall);
+  }
+ },30);
+ setTimeout(spawn,speed);
+}
+
+function nextLevel(){
+ level++;
+ levelEl.textContent=level;
+ speed = Math.max(200, speed - 50);
+ alert("Level "+level+"! 🐹");
+}
+
+function start(){
+ score=0; coins=0; level=1; speed=600;
+ scoreEl.textContent=0; coinsEl.textContent=0; levelEl.textContent=1;
+ let h=document.getElementById("hat").value;
+ hamster.textContent="🐹"+h;
+ running=true;
+ spawn();
+ setInterval(()=>{if(score>0 && score%10===0){nextLevel(); score++;}},5000);
+}
+</script>
+
+</body>
+</html>
