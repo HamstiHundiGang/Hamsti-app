@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsti Gang - Kinder App</title>
+<style>
+body { margin:0; padding:0; font-family:Arial,sans-serif; background:#111; color:white; }
+header { background:#ffcc00; color:black; text-align:center; padding:20px; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; background:#222; padding:10px 0; }
+nav button { background:#ffcc00; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; font-weight:bold; margin:5px; transition:0.3s; }
+nav button:hover { background:#ffd633; }
+section { padding:20px; margin:15px; background:#1e1e1e; border-radius:12px; }
+h1,h2 { color:#ffcc00; }
+footer { text-align:center; padding:15px; color:#ccc; }
+.hidden { display:none; }
+.quiz-button { display:block; margin:10px 0; padding:10px; border-radius:8px; border:none; background:#ffcc00; color:black; font-weight:bold; cursor:pointer; transition:0.2s; }
+.quiz-button:hover { background:#ffd633; }
+iframe { width:100%; height:315px; border:none; margin-top:10px; border-radius:12px; }
+audio { display:none; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>🐹 Hamsti Gang</h1>
+<p>Raffi ist der Chef!</p>
+</header>
+
+<nav>
+<button onclick="showSection('home')">Start</button>
+<button onclick="showSection('quiz')">Quiz</button>
+<button onclick="showSection('videos')">Videos</button>
+</nav>
+
+<section id="home">
+<h2>Willkommen bei der Hamsti Gang!</h2>
+<p>Erlebe Abenteuer mit Raffi und seinen Freunden! 🐹</p>
+<audio id="bgmusic" autoplay loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+</section>
+
+<section id="quiz" class="hidden">
+<h2>Hamsti Quiz 🧠</h2>
+<div id="question-container">
+<p id="question-text"></p>
+<button class="quiz-button" onclick="checkAnswer('A')">A</button>
+<button class="quiz-button" onclick="checkAnswer('B')">B</button>
+<p id="quiz-result"></p>
+<audio id="correct-sound"><source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg"></audio>
+<audio id="wrong-sound"><source src="https://www.soundjay.com/button/sounds/button-10.mp3" type="audio/mpeg"></audio>
+</div>
+</section>
+
+<section id="videos" class="hidden">
+<h2>Videos 🎬</h2>
+<p>Short:</p>
+<iframe src="https://www.youtube.com/embed/HbZC6zZYYGM" allowfullscreen></iframe>
+<p>Langvideo:</p>
+<iframe src="https://www.youtube.com/embed/ZfrgZWUrUtE" allowfullscreen></iframe>
+</section>
+
+<footer>
+© 2025 Hamsti Gang – Raffi ist der Chef 🐹
+</footer>
+
+<script>
+function showSection(id){
+  const sections=['home','quiz','videos'];
+  sections.forEach(sec=>document.getElementById(sec).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+const quiz=[
+{question:"Wer ist der Chef?",A:"Leo",B:"Raffi",correct:"B"},
+{question:"Wann sind Hamster aktiv?",A:"Tagsüber",B:"Nachts",correct:"B"},
+{question:"Was sammeln Hamster?",A:"Futter",B:"Wasser",correct:"A"},
+{question:"Was lieben Hamster am meisten?",A:"Körner & Samen",B:"Steine",correct:"A"},
+{question:"Hamsterbewegung?",A:"Laufen im Rad",B:"Fliegen",correct:"A"},
+{question:"Wie lange leben Hamster?",A:"2-3 Jahre",B:"10 Jahre",correct:"A"},
+{question:"Wo schlafen Hamster?",A:"In Höhlen",B:"Auf Bäumen",correct:"A"},
+{question:"Was machen Hamster nachts?",A:"Spielen und Futtern",B:"Fernsehen",correct:"A"},
+{question:"Wozu dienen die Backentaschen?",A:"Futter transportieren",B:"Zur Dekoration",correct:"A"},
+{question:"Wie schnell können Hamster laufen?",A:"Bis 8 km/h",B:"Bis 50 km/h",correct:"A"},
+{question:"Hamster Lieblingsfutter?",A:"Körner",B:"Brot",correct:"A"},
+{question:"Welche Farbe haben Teddy-Goldhamster?",A:"Hellbraun-Weiß",B:"Schwarz",correct:"A"},
+{question:"Wie groß werden Hamster?",A:"6-12 cm",B:"50 cm",correct:"A"},
+{question:"Hamster schlafen wie?",A:"Tief & fest",B:"Immer wach",correct:"A"},
+{question:"Hamster Freunde?",A:"Andere Hamster",B:"Mäuse",correct:"A"},
+{question:"Hamster Wasseraufnahme?",A:"Klein & regelmäßig",B:"Groß & selten",correct:"A"},
+{question:"Hamster Lieblingsspielzeug?",A:"Laufrad",B:"Spielzeugauto",correct:"A"},
+{question:"Hamster Kommunikation?",A:"Quieken & Körpersprache",B:"Singen",correct:"A"},
+{question:"Hamster Verstecke?",A:"Tunnel & Höhlen",B:"Bäume",correct:"A"},
+{question:"Hamster Reaktion?",A:"Neugierig",B:"Faul",correct:"A"},
+{question:"Hamster Aktivität?",A:"Nachtaktiv",B:"Tagsüber aktiv",correct:"A"},
+{question:"Hamster Bewegung?",A:"Rennen & Spielen",B:"Schlafen",correct:"A"},
+{question:"Hamster Ernährung?",A:"Samen & Gemüse",B:"Steine",correct:"A"},
+{question:"Hamster Arten?",A:"Teddy-Gold",B:"Syrischer",correct:"A"},
+{question:"Hamster Lebensraum?",A:"Höhlen/Käfig",B:"Bäume",correct:"A"},
+{question:"Hamster Größe?",A:"6-12 cm",B:"50 cm",correct:"A"},
+{question:"Hamster Alter?",A:"2-3 Jahre",B:"10 Jahre",correct:"A"},
+{question:"Hamster Lieblingsort?",A:"Laufrad",B:"Treppe",correct:"A"},
+{question:"Hamster Freunde?",A:"Andere Hamster",B:"Mäuse",correct:"A"},
+{question:"Hamster Lieblingsspiel?",A:"Laufrad",B:"Spielzeugauto",correct:"A"}
+];
+
+let currentQuestion=0;
+function loadQuestion(){
+  const q=quiz[currentQuestion];
+  document.getElementById('question-text').textContent=q.question;
+  const buttons=document.querySelectorAll('.quiz-button');
+  buttons[0].textContent='A) '+q.A;
+  buttons[1].textContent='B) '+q.B;
+  document.getElementById('quiz-result').textContent='';
+}
+function checkAnswer(answer){
+  const result=document.getElementById('quiz-result');
+  const correctSound=document.getElementById('correct-sound');
+  const wrongSound=document.getElementById('wrong-sound');
+  if(answer===quiz[currentQuestion].correct){ 
+    result.textContent='Richtig 🎉';
+    correctSound.play();
+  } else { 
+    result.textContent='Falsch ❌'; 
+    wrongSound.play();
+  }
+  currentQuestion++;
+  if(currentQuestion<quiz.length){ setTimeout(loadQuestion,1000); }
+  else{ setTimeout(()=>{ result.textContent="Quiz beendet! 🐹💛"; currentQuestion=0; loadQuestion(); },1000); }
+}
+window.onload=loadQuestion;
+</script>
+
+</body>
+</html>
