@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamstube Multiplayer – Hamsti Gang</title>
+<style>
+body { margin:0; font-family:Arial, sans-serif; background:#111; color:white; }
+header { background:#ffcc00; color:black; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
+#login, #mainApp { max-width:800px; margin:auto; padding:20px; }
+input, button, select, textarea { padding:8px; margin:5px; border-radius:8px; border:none; }
+button { background:#ffcc00; color:black; font-weight:bold; cursor:pointer; }
+.video-card { background:#222; margin:10px 0; padding:10px; border-radius:12px; }
+video { width:100%; border-radius:10px; }
+#searchBar { width:70%; padding:8px; border-radius:8px; border:none; margin:5px; }
+.avatar { font-size:32px; }
+.likeBtn { background:#ffcc00; padding:5px 10px; border-radius:6px; cursor:pointer; margin-top:5px; }
+.commentBox { width:95%; padding:5px; border-radius:6px; margin-top:5px; }
+.commentBtn { background:#ffcc00; padding:5px 10px; border-radius:6px; cursor:pointer; margin-left:5px; }
+.userList { background:#222; padding:10px; border-radius:10px; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header>🐹 Hamstube Multiplayer</header>
+
+<div id="login">
+<h2>Login</h2>
+<p>Wähle deinen Hamster-Avatar:</p>
+<select id="avatarSelect">
+<option value="🐹">🐹</option>
+<option value="🐰">🐰</option>
+<option value="🐱">🐱</option>
+<option value="🦊">🦊</option>
+</select><br>
+<input type="text" id="username" placeholder="Benutzername"><br>
+<input type="password" id="password" placeholder="Passwort"><br>
+<button onclick="login()">Login</button>
+<p id="loginMsg"></p>
+</div>
+
+<div id="mainApp" style="display:none;">
+<h2>Willkommen, <span id="userDisplay"></span> <span id="avatarDisplay" class="avatar"></span>!</h2>
+
+<h3>Online Benutzer</h3>
+<div id="userList" class="userList"></div>
+
+<h3>Video erstellen</h3>
+<input type="text" id="videoTitle" placeholder="Videotitel"><br>
+<textarea id="videoDesc" placeholder="Beschreibung" rows="2" style="width:95%;"></textarea><br>
+<select id="videoFile">
+<option value="https://www.w3schools.com/html/mov_bbb.mp4">Beispielvideo 1</option>
+<option value="https://www.w3schools.com/html/movie.mp4">Beispielvideo 2</option>
+</select>
+<button onclick="addVideo()">Hochladen</button>
+
+<h3>Videos durchsuchen</h3>
+<input type="text" id="searchBar" placeholder="Suche..." oninput="searchVideos()">
+
+<div id="videoList"></div>
+</div>
+
+<script>
+let users = [];
+let videos = [];
+let currentUser = {};
+
+function login(){
+  let user = document.getElementById('username').value;
+  let pass = document.getElementById('password').value;
+  let avatar = document.getElementById('avatarSelect').value;
+  if(user && pass){
+    currentUser = {name:user, avatar:avatar};
+    users.push(currentUser);
+    updateUserList();
+    document.getElementById('login').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    document.getElementById('userDisplay').textContent = user;
+    document.getElementById('avatarDisplay').textContent = avatar;
+  } else {
+    document.getElementById('loginMsg').textContent='Bitte Benutzername und Passwort eingeben!';
+  }
+}
+
+function updateUserList(){
+  let list = document.getElementById('userList');
+  list.innerHTML='';
+  for(let u of users){
+    let p = document.createElement('p');
+    p.textContent = `${u.avatar} ${u.name}`;
+    list.appendChild(p);
+  }
+}
+
+function addVideo(){
+  let title = document.getElementById('videoTitle').value;
+  let desc = document.getElementById('videoDesc').value;
+  let file = document.getElementById('videoFile').value;
+  if(title && file){
+    let videoObj = {title, desc, file, likes:0, comments:[], uploader:currentUser.name};
+    videos.push(videoObj);
+    displayVideos();
+    document.getElementById('videoTitle').value='';
+    document.getElementById('videoDesc').value='';
+  } else {
+    alert('Titel und Video auswählen!');
+  }
+}
+
+function displayVideos(){
+  let list = document.getElementById('videoList');
+  list.innerHTML='';
+  for(let i=0;i<videos.length;i++){
+    let v = videos[i];
+    let card = document.createElement('div');
+    card.className='video-card';
+    card.innerHTML=`
+      <h4>${v.title} (von ${v.uploader})</h4>
+      <p>${v.desc}</p>
+      <video controls src="${v.file}"></video>
+      <div>Likes: <span id="likes${i}">${v.likes}</span> 
+      <button class="likeBtn" onclick="likeVideo(${i})">👍 Like</button></div>
+      <div>
+        <input id="commentInput${i}" class="commentBox" placeholder="Kommentar...">
+        <button class="commentBtn" onclick="addComment(${i})">Posten</button>
+      </div>
+      <div id="commentList${i}"></div>
+    `;
+    list.appendChild(card);
+    updateComments(i);
+  }
+}
+
+function searchVideos(){
+  let query = document.getElementById('searchBar').value.toLowerCase();
+  let list = document.getElementById('videoList');
+  list.innerHTML='';
+  for(let i=0;i<videos.length;i++){
+    let v = videos[i];
+    if(v.title.toLowerCase().includes(query) || v.desc.toLowerCase().includes(query)){
+      let card = document.createElement('div');
+      card.className='video-card';
+      card.innerHTML=`
+        <h4>${v.title} (von ${v.uploader})</h4>
+        <p>${v.desc}</p>
+        <video controls src="${v.file}"></video>
+        <div>Likes: <span id="likes${i}">${v.likes}</span> 
+        <button class="likeBtn" onclick="likeVideo(${i})">👍 Like</button></div>
+        <div>
+          <input id="commentInput${i}" class="commentBox" placeholder="Kommentar...">
+          <button class="commentBtn" onclick="addComment(${i})">Posten</button>
+        </div>
+        <div id="commentList${i}"></div>
+      `;
+      list.appendChild(card);
+      updateComments(i);
+    }
+  }
+}
+
+function likeVideo(index){
+  videos[index].likes++;
+  document.getElementById('likes'+index).textContent = videos[index].likes;
+}
+
+function addComment(index){
+  let input = document.getElementById('commentInput'+index);
+  let comment = `${currentUser.avatar} ${currentUser.name}: ${input.value.trim()}`;
+  if(comment){
+    videos[index].comments.push(comment);
+    input.value='';
+    updateComments(index);
+  }
+}
+
+function updateComments(index){
+  let commentDiv = document.getElementById('commentList'+index);
+  commentDiv.innerHTML = '';
+  for(let c of videos[index].comments){
+    let p = document.createElement('p');
+    p.textContent = "💬 " + c;
+    commentDiv.appendChild(p);
+  }
+}
+</script>
+
+</body>
+</html>
