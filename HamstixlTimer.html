@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsti Silvester Countdown 🎉</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#111; color:white; overflow:hidden; text-align:center; }
+header { background:#ffcc00; color:black; padding:20px; font-size:28px; font-weight:bold; position:relative; z-index:2; }
+#timer { font-size:22px; margin-top:30px; position:relative; z-index:2; }
+span { display:inline-block; margin:10px; padding:15px; background:#222; border-radius:10px; min-width:90px; font-weight:bold; }
+.hamster { font-size:32px; position:absolute; animation:hamsterMove 5s linear infinite; }
+@keyframes hamsterMove { 0% { left:-50px; top:20%; } 50% { left:90%; top:40%; } 100% { left:-50px; top:20%; } }
+.firework { position:absolute; width:4px; height:4px; border-radius:50%; animation:fireworkAnim 1s linear; }
+@keyframes fireworkAnim { 0% { transform: scale(0); opacity:1; } 50% { transform: scale(10); opacity:0.8; } 100% { transform: scale(0); opacity:0; } }
+.confetti { position:absolute; width:8px; height:8px; border-radius:50%; animation:confettiFall 3s linear; }
+@keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); } 100% { transform: translateY(800px) rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>🐹 Hamsti Silvester Countdown 🎇</header>
+
+<div id="timer">
+  <span id="months">0 Monate</span>
+  <span id="weeks">0 Wochen</span>
+  <span id="days">0 Tage</span>
+  <span id="hours">0 Stunden</span>
+  <span id="minutes">0 Minuten</span>
+  <span id="seconds">0 Sekunden</span>
+</div>
+
+<!-- Hamster Avatare -->
+<div class="hamster" style="top:10%; left:0;">🐹</div>
+<div class="hamster" style="top:60%; left:20%;">🐰</div>
+<div class="hamster" style="top:30%; left:40%;">🦊</div>
+
+<audio id="bgMusic" loop autoplay>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Countdown Sound
+const tickSound = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
+const fireworksSounds = [
+  'https://www.soundjay.com/misc/sounds/firework1.mp3',
+  'https://www.soundjay.com/misc/sounds/firework2.mp3'
+];
+// The Final Countdown
+const finalCountdown = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'); // hier dein Song-Link einfügen
+
+let finalCountdownPlayed = false;
+
+function playRandomFireworkSound(){
+  const audio = new Audio(fireworksSounds[Math.floor(Math.random()*fireworksSounds.length)]);
+  audio.play();
+}
+
+function createFirework(){
+  const f = document.createElement('div');
+  f.className='firework';
+  f.style.top=Math.random()*90+'%';
+  f.style.left=Math.random()*90+'%';
+  f.style.background=['yellow','red','blue','green','pink'][Math.floor(Math.random()*5)];
+  document.body.appendChild(f);
+  setTimeout(()=>{ f.remove(); },1000);
+}
+
+function createConfetti(){
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.top='0px';
+    c.style.left=Math.random()*window.innerWidth+'px';
+    c.style.background=['yellow','red','blue','green','pink'][Math.floor(Math.random()*5)];
+    document.body.appendChild(c);
+    setTimeout(()=>{ c.remove(); },3000);
+  }
+}
+
+function updateTimer(){
+  const now = new Date();
+  let year = now.getFullYear();
+  const target = new Date(year,11,31,23,59,59);
+  if(now > target){ target.setFullYear(year+1); }
+  let diff = target - now;
+
+  const months = target.getMonth() - now.getMonth() + (12*(target.getFullYear()-now.getFullYear()));
+  const weeks = Math.floor(diff / (1000*60*60*24*7));
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById('months').textContent = months + ' Monate';
+  document.getElementById('weeks').textContent = weeks + ' Wochen';
+  document.getElementById('days').textContent = days + ' Tage';
+  document.getElementById('hours').textContent = hours + ' Stunden';
+  document.getElementById('minutes').textContent = minutes + ' Minuten';
+  document.getElementById('seconds').textContent = seconds + ' Sekunden';
+
+  tickSound.currentTime = 0;
+  tickSound.play();
+
+  if(diff < 5000 && !finalCountdownPlayed){ // 5 Sekunden vor Jahreswechsel
+    finalCountdown.play();
+    finalCountdownPlayed = true;
+    createConfetti();
+    playRandomFireworkSound();
+  }
+}
+
+setInterval(createFirework,500);
+setInterval(updateTimer,1000);
+updateTimer();
+</script>
+
+</body>
+</html>
