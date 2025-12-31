@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsti Gang Spiel</title>
+
+<style>
+body{
+  margin:0;
+  background:#111;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+h1{color:#ffcc00;}
+#game{
+  position:relative;
+  margin:20px auto;
+  width:300px;
+  height:400px;
+  background:#222;
+  border-radius:15px;
+  overflow:hidden;
+}
+#hamster{
+  position:absolute;
+  bottom:10px;
+  left:130px;
+  font-size:30px;
+}
+.item{
+  position:absolute;
+  top:0;
+  font-size:24px;
+}
+#score{
+  font-size:18px;
+}
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#ffcc00;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🐹 Hamsti Gang</h1>
+<p>Raffi sammelt Sterne ⭐ – weiche Fallen ❌ aus!</p>
+<p id="score">Punkte: 0</p>
+
+<div id="game">
+  <div id="hamster">🐹</div>
+</div>
+
+<button onclick="start()">Start / Neustart</button>
+
+<script>
+let hamster=document.getElementById("hamster");
+let game=document.getElementById("game");
+let scoreEl=document.getElementById("score");
+
+let x=130;
+let score=0;
+let speed=200;
+let running=false;
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft") x-=20;
+  if(e.key==="ArrowRight") x+=20;
+  x=Math.max(0,Math.min(260,x));
+  hamster.style.left=x+"px";
+});
+
+game.addEventListener("click",e=>{
+  x = e.offsetX < 150 ? x-30 : x+30;
+  x=Math.max(0,Math.min(260,x));
+  hamster.style.left=x+"px";
+});
+
+function spawn(){
+  if(!running) return;
+  let item=document.createElement("div");
+  item.className="item";
+  let good=Math.random()>0.3;
+  item.textContent= good ? "⭐" : "❌";
+  item.style.left=Math.random()*260+"px";
+  game.appendChild(item);
+
+  let y=0;
+  let fall=setInterval(()=>{
+    if(!running){ clearInterval(fall); return; }
+    y+=5;
+    item.style.top=y+"px";
+
+    let hx=hamster.offsetLeft;
+    let ix=item.offsetLeft;
+
+    if(y>350){
+      if(Math.abs(hx-ix)<30){
+        if(good){
+          score++;
+          scoreEl.textContent="Punkte: "+score;
+          speed=Math.max(60,speed-5);
+        }else{
+          alert("GAME OVER 😢\nPunkte: "+score);
+          running=false;
+        }
+      }
+      item.remove();
+      clearInterval(fall);
+    }
+  },30);
+
+  setTimeout(spawn,speed);
+}
+
+function start(){
+  game.querySelectorAll(".item").forEach(i=>i.remove());
+  score=0;
+  speed=200;
+  scoreEl.textContent="Punkte: 0";
+  running=true;
+  spawn();
+}
+</script>
+
+</body>
+</html>
