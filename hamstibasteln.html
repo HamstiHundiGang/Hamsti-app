@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsti Bastel App</title>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#fef6e4;
+  color:#333;
+}
+header {
+  background:#ffcc00;
+  padding:20px;
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+}
+section {
+  background:white;
+  margin:15px;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+h2 {
+  color:#ff9900;
+}
+button {
+  background:#ffcc00;
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+button:hover {
+  background:#ffd633;
+}
+.hidden {
+  display:none;
+}
+footer {
+  text-align:center;
+  padding:15px;
+  font-size:14px;
+  color:#777;
+}
+</style>
+</head>
+<body>
+
+<header>🐹 Hamsti Bastel App</header>
+
+<section>
+<h2>🎨 Bastelideen</h2>
+<button onclick="show('idea1')">Hamster aus Papier</button>
+<button onclick="show('idea2')">Hamster aus Klorolle</button>
+<button onclick="show('idea3')">Hamster Maske</button>
+</section>
+
+<section id="idea1" class="hidden">
+<h2>🐹 Hamster aus Papier</h2>
+<p><b>Material:</b><br>
+Papier, Schere, Kleber, Filzstifte</p>
+<p><b>Anleitung:</b><br>
+1. Schneide einen Kreis aus Papier.<br>
+2. Male Augen, Nase und Mund.<br>
+3. Klebe Ohren an.<br>
+4. Fertig ist dein Hamsti! 🎉</p>
+<button onclick="hideAll()">Zurück</button>
+</section>
+
+<section id="idea2" class="hidden">
+<h2>🐹 Hamster aus Klorolle</h2>
+<p><b>Material:</b><br>
+Klorolle, Papier, Kleber, Farbe</p>
+<p><b>Anleitung:</b><br>
+1. Male die Klorolle an.<br>
+2. Schneide Ohren aus Papier.<br>
+3. Klebe Gesicht auf.<br>
+4. Lass alles trocknen.</p>
+<button onclick="hideAll()">Zurück</button>
+</section>
+
+<section id="idea3" class="hidden">
+<h2>🎭 Hamster Maske</h2>
+<p><b>Material:</b><br>
+Papier, Gummiband, Schere</p>
+<p><b>Anleitung:</b><br>
+1. Male ein Hamster-Gesicht.<br>
+2. Schneide Augenlöcher.<br>
+3. Befestige das Gummiband.<br>
+4. Setz die Maske auf 🐹</p>
+<button onclick="hideAll()">Zurück</button>
+</section>
+
+<footer>
+© Hamsti Gang 🐹 Basteln macht schlau & Spaß!
+</footer>
+
+<script>
+function show(id){
+  hideAll();
+  document.getElementById(id).classList.remove("hidden");
+}
+function hideAll(){
+  document.querySelectorAll("section").forEach(sec=>{
+    if(sec.id.startsWith("idea")) sec.classList.add("hidden");
+  });
+}
+</script>
+
+</body>
+</html>
